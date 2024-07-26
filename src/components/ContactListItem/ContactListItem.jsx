@@ -1,9 +1,9 @@
 // import React, { Component } from 'react';
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import css from './ContactListItem.module.css';
 import { useDispatch } from 'react-redux';
-import { deleteContact } from 'features/contactsSlice';
+import { deleteContact } from 'features/operations';
 
 function ContactListItem({ contact, toCapitalize }) {
 
@@ -12,7 +12,7 @@ function ContactListItem({ contact, toCapitalize }) {
   return (
     <li className={css.contact}>
       <span className={css.contactItemSpan}>
-        {toCapitalize(contact.name)}: {contact.number}
+        {toCapitalize(contact.name)}: {contact.phone}
       </span>
       <button
         className={css.contactItemButton}
@@ -24,37 +24,10 @@ function ContactListItem({ contact, toCapitalize }) {
   );
 }
 
+ContactListItem.propTypes = {
+  contact: PropTypes.object.isRequired,
+  toCapitalize: PropTypes.func.isRequired,
+};
+
 export default ContactListItem;
 
-// ContactListItem.propTypes = {
-//     contact: PropTypes.object.isRequired,
-//     toCapitalize: PropTypes.func.isRequired,
-//     deleteContact: PropTypes.func.isRequired,
-//   };
-
-
-// export class ContactListItem extends Component {
-//   static propTypes = {
-//     contact: PropTypes.object.isRequired,
-//     toCapitalize: PropTypes.func.isRequired,
-//     deleteContact: PropTypes.func.isRequired,
-//   };
-//   render() {
-//     const { contact, deleteContact, toCapitalize } = this.props;
-//     return (
-//       <li className={css.contact}>
-//         <span className={css.contactItemSpan}>
-//           {toCapitalize(contact.name)}: {contact.number}
-//         </span>
-//         <button
-//           className={css.contactItemButton}
-//           onClick={() => deleteContact(contact.id)}
-//         >
-//           Delete
-//         </button>
-//       </li>
-//     );
-//   }
-// }
-
-// export default ContactListItem;

@@ -1,53 +1,81 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+// import { persistReducer } from 'redux-persist';
+// import storage from 'redux-persist/lib/storage';
+import { fetchContacts, addContact, deleteContact } from './operations';
 
 export const contactsSlice = createSlice({
   name: 'contacts',
   initialState: {
-    initialContacts: [
-      { id: 'id-1', name: 'Jennie Kim', number: '459-12-56' },
-      { id: 'id-2', name: 'Kim Jisoo', number: '443-89-12' },
-      { id: 'id-3', name: 'Im Nayeon', number: '645-17-79' },
-      { id: 'id-4', name: `Mary Kris Malenab`, number: '227-91-26' },
-    ],
+      items: [],
+      isLoading: false,
+      error: null,
   },
   reducers: {
-    addContact: {
-      reducer: (state, action) => {
-        state.initialContacts.push(action.payload);
-      },
-      // prepare: (name, number) => {
-      //     return {
-      //         payload: {
-      //             id: nanoid(),
-      //             name,
-      //             number,
-      //         }
-      //     }
-      // }
-    },
-    deleteContact: {
-      reducer: (state, action) => {
-        const index = state.initialContacts.findIndex(
-          contact => contact.id === action.payload
+    // addContact: {
+    //   reducer: (state, action) => {
+    //     state.initialContacts.push(action.payload);
+    //   },
+    //   // prepare: (name, number) => {
+    //   //     return {
+    //   //         payload: {
+    //   //             id: nanoid(),
+    //   //             name,
+    //   //             number,
+    //   //         }
+    //   //     }
+    //   // }
+    // },
+    // deleteContact: {
+    //   reducer: (state, action) => {
+    //     const index = state.initialContacts.findIndex(
+    //       contact => contact.id === action.payload
+    //     );
+    //     if (index !== -1) {
+    //       state.initialContacts.splice(index, 1);
+    //     }
+    //   },
+    // },
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchContacts.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(fetchContacts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.items = action.payload;
+      })
+      .addCase(fetchContacts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(addContact.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(addContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.items.push(action.payload);
+      })
+      .addCase(addContact.rejected, (state, action) => {
+        state.isLoading = false;
+        state.erorr = action.payload;
+      })
+      .addCase(deleteContact.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(deleteContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const index = state.items.findIndex(
+          contact => contact.id === action.payload.id
         );
-        if (index !== -1) {
-          state.initialContacts.splice(index, 1);
-        }
-      },
-    },
+        state.items.splice(index, 1);
+      })
+      .addCase(deleteContact.rejected, (state, action) => {
+        state.isLoading = false;
+        state.erorr = action.payload;
+      });
   },
 });
 
-const persistConfig = {
-  key: 'contacts',
-  storage,
-};
-
-export const contactsReducer = persistReducer(
-  persistConfig,
-  contactsSlice.reducer
-);
-
-export const { addContact, deleteContact } = contactsSlice.actions;
+export default contactsSlice.reducer;
