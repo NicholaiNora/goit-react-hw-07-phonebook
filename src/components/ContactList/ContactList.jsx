@@ -25,7 +25,6 @@ function ContactList() {
   // };
 
   // const filteredContacts = filterContacts();
-  console.log(filteredContacts);
   return (
     <ul className={css.contactList}>
       {filteredContacts.map(contact => (
